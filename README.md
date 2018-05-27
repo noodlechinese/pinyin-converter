@@ -8,7 +8,7 @@ PinyinConverter().convert("ni3hao3") // returns 'nǐhǎo'
 
 # Getting Started
 
-Just add the PinyinConverter.swift to your project. There are no external dependencies.
+Just add PinyinConverter.swift to your project. There are no external dependencies.
 
 # Usage
 
