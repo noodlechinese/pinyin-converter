@@ -4,7 +4,7 @@
 //  Converted from https://github.com/quizlet/pinyin-converter
 //
 
-import UIKit
+import Foundation
 
 class PinyinConverter: NSObject {
     
@@ -36,6 +36,7 @@ class PinyinConverter: NSObject {
     ]
     
     var accentMap: [String: String] = [:]
+    var accentArray: [[String]] = [] //Swift dictionaries are not ordered by insertion, so we need this to preserve order
     
     override init() {
         super.init()
@@ -60,7 +61,9 @@ class PinyinConverter: NSObject {
     func getReplacement(_ match: String) -> String {
         let tone = Int(match.suffix(1))! // This should always work because all matches end with a number
         let word = String(match.prefix(match.count - 1).replacingOccurrences(of: "v", with: "ü").replacingOccurrences(of: "V", with: "Ü"))
-        for (base, vowel) in accentMap {
+        for (baseVowelArray) in accentArray {
+            let base = baseVowelArray[0]
+            let vowel = baseVowelArray[1]
             let offset = word.range(of: base)?.lowerBound.encodedOffset
             if (offset != nil && offset! >= 0) {
                 let vowelCharMatch = vowelRegex.firstMatch(in: vowel, options: [], range: NSRange(location: 0, length: (vowel as NSString).length))
@@ -81,6 +84,7 @@ class PinyinConverter: NSObject {
         let starsArray = stars.split(separator: " ")
         let basesArray = nostars.split(separator: " ")
         basesArray.enumerated().forEach({ (index, base) in
+            accentArray.append([String(base), String(starsArray[index])])
             accentMap[String(base)] = String(starsArray[index])
         })
     }
